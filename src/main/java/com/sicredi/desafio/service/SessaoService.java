@@ -7,5 +7,7 @@ public interface SessaoService {
 	public Sessao iniciarSessaoVotacao(Long pautaId, Integer tempoSessaoAtivaEmMinutos);
 	
 	public Boolean isSessaoAbertaParaVotacao(Long pautaId);
+
+	public void atualizarStatusEnvioFilaSessao(Long pautaId);
 	
 }

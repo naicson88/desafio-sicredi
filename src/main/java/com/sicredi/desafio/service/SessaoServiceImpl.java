@@ -1,12 +1,13 @@
 package com.sicredi.desafio.service;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,35 +24,35 @@ public class SessaoServiceImpl implements SessaoService {
 	
 	@Autowired
 	SessaoRepository sessaoRepository;
+	
+	Logger logger = LoggerFactory.getLogger(SessaoServiceImpl.class);
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public Sessao iniciarSessaoVotacao(Long pautaId, Integer tempoSessaoAtivaEmMinutos) {
 		
-		Date dataAtual = new Date();
-		Date dataFim =  converterTempoSessaoAtiva(tempoSessaoAtivaEmMinutos);
-		
 		Pauta pautaSessao = this.validarNovaSessao(pautaId, tempoSessaoAtivaEmMinutos);
-		Sessao novaSessao = sessaoRepository.save(new Sessao(dataAtual, dataFim, pautaSessao));
 		
-		Sessao dois = sessaoRepository.encontrar(novaSessao.getId());
+		Date dataFim =  converterTempoSessaoAtiva(tempoSessaoAtivaEmMinutos);
+				
+		Sessao novaSessao = sessaoRepository.save(new Sessao(new Date(), dataFim, pautaSessao, false));
 		
-		return dois;
+		return novaSessao;
 		
 	}
 	
 	private Pauta validarNovaSessao(Long pautaId, Integer tempoSessaoAtivaEmMinutos) {
-		
-		Pauta pauta = pautaService.consultarPauta(pautaId);
 			
 		if(tempoSessaoAtivaEmMinutos != null && tempoSessaoAtivaEmMinutos < 1)
-			throw new IllegalArgumentException("O tempo de atividade da sessão informado é invalido");	
+			throw new IllegalArgumentException("O tempo de atividade da sessão informado é invalido");
+		
+		Pauta pauta = pautaService.consultarPauta(pautaId);
 		
 		return pauta;
 		
 	}
 	
-	private Date converterTempoSessaoAtiva(Integer minutosAtividadeSessao) {
+	public Date converterTempoSessaoAtiva(Integer minutosAtividadeSessao) {
 		
 		  Calendar c = Calendar.getInstance();
 		  Date dataAtual = new Date();
@@ -85,23 +86,28 @@ public class SessaoServiceImpl implements SessaoService {
 	public Boolean isSessaoAbertaParaVotacao(Long pautaId) {
 		
 		if(pautaId == null || pautaId == 0)
-			throw new EntityNotFoundException("O Id da Pauta informada é invalido");
-		
-//		Date date = new Date();  
-//	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
-//	    String dataAtual = formatter.format(date);  
+			throw new IllegalArgumentException("O Id da Pauta informada é invalido");
 		
 		String isValidParaVotacao = sessaoRepository.isSessaoAbertaParaVotacao(pautaId);
 		
 		if(isValidParaVotacao == null)
 			throw new EntityNotFoundException("Não foi possivel encontrar Sessão com Id da Pauta informado.");
 		
-		Boolean isValid = Boolean.valueOf(isValidParaVotacao);
+		Boolean isSessaoAberta = Boolean.valueOf(isValidParaVotacao);
 		
-		return isValid;
+		return isSessaoAberta;
 		
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void atualizarStatusEnvioFilaSessao(Long pautaId) {
+		if(pautaId == null || pautaId == 0)
+			throw new IllegalArgumentException("O Id da Pauta informada é invalido");	
+		
+		sessaoRepository.atualizarStatusEnvioFilaSessao(pautaId);
+		
+	}	
 	
 	
 }

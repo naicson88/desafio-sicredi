@@ -10,6 +10,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Sessao {
 	
@@ -22,13 +24,16 @@ public class Sessao {
 	private Date dataFim;
 	@OneToOne(optional = false)
 	private Pauta pauta;
+	@JsonIgnore
+	private Boolean enviadoParaTopico; 
 
 	
-	public Sessao(Date dataInicio, Date dataFim, Pauta pauta) {
+	public Sessao(Date dataInicio, Date dataFim, Pauta pauta, Boolean enviadoParaTopico ) {
 		super();
 		this.dataInicio = dataInicio;
 		this.dataFim = dataFim;
 		this.pauta = pauta;
+		this.enviadoParaTopico = enviadoParaTopico;
 	}
 	
 	public Long getId() {
@@ -55,6 +60,13 @@ public class Sessao {
 	public void setPauta(Pauta pauta) {
 		this.pauta = pauta;
 	}
-	
+
+	public Boolean getEnviadoParaTopico() {
+		return enviadoParaTopico;
+	}
+
+	public void setEnviadoParaTopico(Boolean enviadoParaTopico) {
+		this.enviadoParaTopico = enviadoParaTopico;
+	}
 	
 }

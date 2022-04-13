@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -18,7 +18,7 @@ public class Voto {
 	@ApiModelProperty(hidden = true) 
     private Long id;
 	@OneToOne()
-	@JsonProperty("pautaId")
+	@JsonAlias("pautaId")
 	private Pauta pauta;
 	private String escolha;
 	private String idAssociado;

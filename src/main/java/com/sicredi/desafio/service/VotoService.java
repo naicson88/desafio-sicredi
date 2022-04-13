@@ -10,4 +10,6 @@ public interface VotoService {
 	ResultadoVotacaoPautaDto contabilizarVotos(Long pautaId);
 
 	ResultadoVotacaoPautaDto consultarResultadoPauta(Long pautaId);
+
+	ResultadoVotacaoPautaDto enviarResutadoParaFila();
 }

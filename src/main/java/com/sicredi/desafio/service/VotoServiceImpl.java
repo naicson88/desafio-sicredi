@@ -2,6 +2,8 @@ package com.sicredi.desafio.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class VotoServiceImpl implements VotoService {
 	ValidarCPFRestTemplate validarCpfAssociado;
 	@Autowired
 	SessaoService sessaoService;
+	
+	Logger logger = LoggerFactory.getLogger(SessaoServiceImpl.class);
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -124,9 +128,6 @@ public class VotoServiceImpl implements VotoService {
 				throw new ErrorMessage(HttpStatus.OK, "A Sessão desta Pauta continua aberta para votação, aguarde o encerramento para consultar novamente.");
 			
 			List<Voto> listaDeVotos = votoRepository.findByPautaId(pautaId);
-			
-			if(listaDeVotos == null || listaDeVotos.isEmpty())
-				throw new NoSuchElementException("Não houve nenhuma votação para esta Pauta");
 					
 			resultadoVotacao.setTotalDeVotos(listaDeVotos.size());
 			resultadoVotacao.setVotosSim(listaDeVotos.stream().filter(voto -> voto.getEscolha().equals("SIM")).count());
@@ -137,5 +138,19 @@ public class VotoServiceImpl implements VotoService {
 		
 	}
 	
+	@Override
+	public ResultadoVotacaoPautaDto enviarResutadoParaFila() {
+		Long idPautaASerEnviadaParaFila = votoRepository.encontrarVotacaoNaoEnviadasParaFila();
+		
+		if(idPautaASerEnviadaParaFila == null || idPautaASerEnviadaParaFila == 0) {
+			logger.info("Não existem votações a serem enviadas para fila");
+			return null;
+		}
+		
+		ResultadoVotacaoPautaDto resultadoVotacao = this.consultarResultadoPauta(idPautaASerEnviadaParaFila);
+		
+		return resultadoVotacao;
+			
+	}
 	
 }

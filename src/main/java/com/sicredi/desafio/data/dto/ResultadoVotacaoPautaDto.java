@@ -1,12 +1,10 @@
 package com.sicredi.desafio.data.dto;
 
-import java.util.List;
+import java.io.Serializable;
 
-import com.sicredi.desafio.entity.Pauta;
-import com.sicredi.desafio.entity.Voto;
+public class ResultadoVotacaoPautaDto  implements Serializable{
 
-public class ResultadoVotacaoPautaDto {
-	
+	private static final long serialVersionUID = 1L;
 	private Long pautaId;
 	private Long votosSim;
 	private Long votosNao;

@@ -1,6 +1,5 @@
 package com.sicredi.desafio.service;
 
-import javax.management.InvalidAttributeValueException;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ public class PautaServiceImpl implements PautaService {
 	
 	@Autowired
 	PautaRepository pautaRepository;
-//	@Autowired
-//	VotoService votoService;
 
 
 	@Override
@@ -31,7 +28,7 @@ public class PautaServiceImpl implements PautaService {
 		return pautaCriada;
 	}
 	
-	public void validarNovaPauta(Pauta pauta) {		
+	private void validarNovaPauta(Pauta pauta) {		
 				
 			if(pauta == null)
 				throw new IllegalArgumentException("A Pauta informada para cadastro não é valida.");

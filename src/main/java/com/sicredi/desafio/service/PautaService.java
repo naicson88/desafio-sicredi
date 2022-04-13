@@ -1,6 +1,5 @@
 package com.sicredi.desafio.service;
 
-import com.sicredi.desafio.data.dto.ResultadoVotacaoPautaDto;
 import com.sicredi.desafio.entity.Pauta;
 
 public interface PautaService {
