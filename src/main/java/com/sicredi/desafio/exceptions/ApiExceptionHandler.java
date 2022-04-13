@@ -51,14 +51,14 @@ public class ApiExceptionHandler {
 		
 		@ExceptionHandler(value = {RuntimeException.class})
 		public ResponseEntity<Object> handleRuntimeException(RuntimeException re){
-			ApiExceptions ex = new ApiExceptions(re.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, this.time);
+			ApiExceptions ex = new ApiExceptions("Algo deu errado, verifique os dados informados: " + re.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, this.time);
 			logger.error("RuntimeException: " + re.getMessage());
 			
 			return new ResponseEntity<Object>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		@ExceptionHandler(value = {ErrorMessage.class})
-		public ResponseEntity<Object> handleRuntimeException(ErrorMessage rm){
+		public ResponseEntity<Object> handleErrorMessage(ErrorMessage rm){
 			ApiExceptions ex = new ApiExceptions(rm.getMsg(), rm.getHttpStatus().value(),  rm.getHttpStatus(), this.time);
 			logger.error("Message : " + rm.getMsg());
 			

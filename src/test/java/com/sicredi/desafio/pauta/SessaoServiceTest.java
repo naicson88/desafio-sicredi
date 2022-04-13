@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -101,7 +102,8 @@ public class SessaoServiceTest {
 	@Test
 	public void validSessaoAbertaParaVotacao() {
 		Long pautaId = 1L;
-		Mockito.when(sessaoRepository.isSessaoAbertaParaVotacao(pautaId)).thenReturn("true");
+	
+		Mockito.when(sessaoRepository.isSessaoAbertaParaVotacao(anyLong(), anyString())).thenReturn("true");
 		
 		Boolean isSessaoAberta = sessaoService.isSessaoAbertaParaVotacao(pautaId);
 		
@@ -111,7 +113,8 @@ public class SessaoServiceTest {
 	@Test
 	public void validSessaoFechadaParaVotacao() {
 		Long pautaId = 1L;
-		Mockito.when(sessaoRepository.isSessaoAbertaParaVotacao(pautaId)).thenReturn("false");
+
+		Mockito.when(sessaoRepository.isSessaoAbertaParaVotacao(anyLong(), anyString())).thenReturn("false");
 		
 		Boolean isSessaoAberta = sessaoService.isSessaoAbertaParaVotacao(pautaId);
 		

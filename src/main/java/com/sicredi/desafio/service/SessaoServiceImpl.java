@@ -1,13 +1,13 @@
 package com.sicredi.desafio.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +24,7 @@ public class SessaoServiceImpl implements SessaoService {
 	
 	@Autowired
 	SessaoRepository sessaoRepository;
-	
-	Logger logger = LoggerFactory.getLogger(SessaoServiceImpl.class);
+
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -88,7 +87,11 @@ public class SessaoServiceImpl implements SessaoService {
 		if(pautaId == null || pautaId == 0)
 			throw new IllegalArgumentException("O Id da Pauta informada é invalido");
 		
-		String isValidParaVotacao = sessaoRepository.isSessaoAbertaParaVotacao(pautaId);
+		  Date date = Calendar.getInstance().getTime();  
+          DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+          String dtAtual = dateFormat.format(date);  
+		
+		String isValidParaVotacao = sessaoRepository.isSessaoAbertaParaVotacao(pautaId, dtAtual);
 		
 		if(isValidParaVotacao == null)
 			throw new EntityNotFoundException("Não foi possivel encontrar Sessão com Id da Pauta informado.");

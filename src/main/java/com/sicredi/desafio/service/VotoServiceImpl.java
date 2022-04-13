@@ -1,4 +1,8 @@
 package com.sicredi.desafio.service;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -119,35 +123,44 @@ public class VotoServiceImpl implements VotoService {
 	
 	@Override
 	public ResultadoVotacaoPautaDto contabilizarVotos(Long pautaId) {
-		
-		ResultadoVotacaoPautaDto resultadoVotacao = new ResultadoVotacaoPautaDto();
-						
+					
 			Boolean isSessaoAbertaParaVotacao = sessaoService.isSessaoAbertaParaVotacao(pautaId);
 			
 			if(isSessaoAbertaParaVotacao)
 				throw new ErrorMessage(HttpStatus.OK, "A Sessão desta Pauta continua aberta para votação, aguarde o encerramento para consultar novamente.");
 			
-			List<Voto> listaDeVotos = votoRepository.findByPautaId(pautaId);
-					
-			resultadoVotacao.setTotalDeVotos(listaDeVotos.size());
-			resultadoVotacao.setVotosSim(listaDeVotos.stream().filter(voto -> voto.getEscolha().equals("SIM")).count());
-			resultadoVotacao.setVotosNao(listaDeVotos.stream().filter(voto -> voto.getEscolha().equals("NÃO")).count());
-
-				 
-		 return resultadoVotacao;
+			ResultadoVotacaoPautaDto resultadoVotacao = this.contarbilizarVotosDeUmaPauta(pautaId);
+			
+			return resultadoVotacao;
+	}
+	
+	private ResultadoVotacaoPautaDto contarbilizarVotosDeUmaPauta(Long pautaId) {
 		
+		ResultadoVotacaoPautaDto resultadoVotacao = new ResultadoVotacaoPautaDto();
+		List<Voto> listaDeVotos = votoRepository.findByPautaId(pautaId);
+		
+		resultadoVotacao.setTotalDeVotos(listaDeVotos.size());
+		resultadoVotacao.setVotosSim(listaDeVotos.stream().filter(voto -> voto.getEscolha().equals("SIM")).count());
+		resultadoVotacao.setVotosNao(listaDeVotos.stream().filter(voto -> voto.getEscolha().equals("NÃO")).count());
+		resultadoVotacao.setPauta(pautaId);
+		return resultadoVotacao;
 	}
 	
 	@Override
 	public ResultadoVotacaoPautaDto enviarResutadoParaFila() {
-		Long idPautaASerEnviadaParaFila = votoRepository.encontrarVotacaoNaoEnviadasParaFila();
+		
+		  Date date = Calendar.getInstance().getTime();  
+          DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+          String dtAtual = dateFormat.format(date);  
+		
+		Long idPautaASerEnviadaParaFila = votoRepository.encontrarVotacaoNaoEnviadasParaFila(dtAtual);
 		
 		if(idPautaASerEnviadaParaFila == null || idPautaASerEnviadaParaFila == 0) {
 			logger.info("Não existem votações a serem enviadas para fila");
 			return null;
 		}
 		
-		ResultadoVotacaoPautaDto resultadoVotacao = this.consultarResultadoPauta(idPautaASerEnviadaParaFila);
+		ResultadoVotacaoPautaDto resultadoVotacao = this.contarbilizarVotosDeUmaPauta(idPautaASerEnviadaParaFila);
 		
 		return resultadoVotacao;
 			

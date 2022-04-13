@@ -26,7 +26,10 @@ public class Sessao {
 	private Pauta pauta;
 	@JsonIgnore
 	private Boolean enviadoParaTopico; 
-
+	
+	public Sessao() {
+		
+	}
 	
 	public Sessao(Date dataInicio, Date dataFim, Pauta pauta, Boolean enviadoParaTopico ) {
 		super();

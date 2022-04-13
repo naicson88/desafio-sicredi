@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,6 @@ import org.springframework.test.context.ActiveProfiles;
 import com.sicredi.desafio.data.dto.ResultadoVotacaoPautaDto;
 import com.sicredi.desafio.entity.Voto;
 import com.sicredi.desafio.exceptions.ErrorMessage;
-import com.sicredi.desafio.mocks.ResultadoVotacaoPautaDtoMock;
 import com.sicredi.desafio.mocks.VotoMock;
 import com.sicredi.desafio.repository.VotoRepository;
 import com.sicredi.desafio.restTemplate.ValidarCPFRestTemplate;
@@ -103,20 +102,14 @@ public class VotoServiceTest {
 	
 	@Test
 	public void enviarResultadoVotacaoParaFila() {
-		Long pautaId = 1L;
+		Long pautaId = 1L;		
 		
-		ResultadoVotacaoPautaDto dto = ResultadoVotacaoPautaDtoMock.gerarResultado();
-		
-		Mockito.when(votoRepository.encontrarVotacaoNaoEnviadasParaFila()).thenReturn(pautaId);
-		
-		doReturn(dto).when(votoService).consultarResultadoPauta(pautaId);
-		
+		Mockito.when(votoRepository.encontrarVotacaoNaoEnviadasParaFila(anyString())).thenReturn(pautaId);
+				
 		ResultadoVotacaoPautaDto resultado = votoService.enviarResutadoParaFila();
 		
 		assertNotNull(resultado);
 		assertThat(resultado.getVotosNao() > 0);
-		
-		
-		
+			
 	}
 }
