@@ -40,7 +40,7 @@ API Rest para gerenciamento de Votação de Pautas
     GET - Consultar resultado: api/v1/voto/consultar-resultado-votacao?pautaId=?
 
 
-# Como executar o projeto
+# Como executar as Requisições
 ![uso 1](https://github.com/naicson88/desafio-sicredi/blob/master/assets/ex1.png)
 ![uso 2](https://github.com/naicson88/desafio-sicredi/blob/master/assets/ex2.png)
 ![uso 3](https://github.com/naicson88/desafio-sicredi/blob/master/assets/ex3.png)
